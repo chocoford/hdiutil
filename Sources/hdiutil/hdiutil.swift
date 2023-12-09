@@ -1,14 +1,12 @@
-// The Swift Programming Language
-// https://docs.swift.org/swift-book
-
 import Foundation
 import AppKit
 import os
 
+/// Apple Docs: https://ss64.com/osx/hdiutil.html
 final public class hdiutilClass {
     let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "", category: "hdiutil")
     
-    public var log = false
+    public private(set) var log = false
     var isSandbox: Bool {
         false
     }
@@ -380,17 +378,18 @@ internal extension hdiutilClass {
                 task.standardOutput = pipe
                 task.standardError = errPipe
                 task.arguments = arguments
+                task.executableURL = URL(string: "file:///usr/bin/hdiutil")
                 
-                if let resourceURL = Bundle.main.url(forResource: "hdiutil", withExtension: nil) {
-                    self.logger.info("hdiutil found in Resources.")
-                    task.executableURL = resourceURL
-                } else if let auxiliaryURL = Bundle.main.url(forAuxiliaryExecutable: "hdiutil") {
-                    self.logger.info("hdiutil found in Copies.")
-                    task.executableURL = auxiliaryURL
-                } else {
-                    self.logger.info("hdiutil not found in bundle, use /usr/bin/hdiutil instead.")
-                    task.executableURL = URL(string: "file:///usr/bin/hdiutil")
-                }
+//                if let resourceURL = Bundle.main.url(forResource: "hdiutil", withExtension: nil) {
+//                    self.logger.info("hdiutil found in Resources.")
+//                    task.executableURL = resourceURL
+//                } else if let auxiliaryURL = Bundle.main.url(forAuxiliaryExecutable: "hdiutil") {
+//                    self.logger.info("hdiutil found in Copies.")
+//                    task.executableURL = auxiliaryURL
+//                } else {
+//                    self.logger.info("hdiutil not found in bundle, use /usr/bin/hdiutil instead.")
+//                    task.executableURL = URL(string: "file:///usr/bin/hdiutil")
+//                }
                 
                 if self.log {
                     self.logger.debug("executableURL: \(task.executableURL?.absoluteString ?? "nil", privacy: .public)")
@@ -432,6 +431,7 @@ internal extension hdiutilClass {
         }
     }
 
+    
     @discardableResult
     private func runHDIUtilViaAppleScript(_ command: String, path: String? = nil) async throws -> String {
         let shellCommands: [String] = (path != nil ? ["cd \\\"\(path!)\\\""] : [])
