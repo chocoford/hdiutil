@@ -13,6 +13,19 @@ A WIP hdiutil helper in swift language. For more information, please visit [appl
 
 ## Usage
 
+#### Basic
+
+```swift
+import hdituil
+
+hdiutil.configure(options: .log(true))
+
+hdiutil.create(...)
+hdiutil.detach(...)
+```
+
+
+
 #### Create dmg
 
 ```swift
@@ -25,6 +38,8 @@ try await hdiutil.create(
     ]
 )
 ```
+
+
 
 #### Attach dmg
 
